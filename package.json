@@ -1,0 +1,16 @@
+{
+  "name": "social-media-app",
+  "version": "1.0.0",
+  "description": "Mini Social Media Platform with 100 Reels & Posts, Express backend, and SQLite DB",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node seed.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "sqlite3": "^5.1.7"
+  }
+}

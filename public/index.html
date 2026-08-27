@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Day</title>
+  <!-- Favicon & Fonts -->
+  <link rel="icon" type="image/x-icon" href="https://static.cdninstagram.com/rsrc.php/v3/yt/r/300ZRIlMoYr.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Grand+Hotel&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+
+  <!-- GLOBAL AUDIO PLAYER FOR REEL MUSIC -->
+  <audio id="reel-audio-player" loop preload="auto"></audio>
+
+  <!-- AUTHENTICATION MODAL (HIDDEN BY DEFAULT) -->
+  <div class="modal-overlay" id="auth-modal">
+    <div class="ig-auth-wrapper">
+      <div class="ig-auth-card">
+        <h1 class="ig-logo-text">New Day</h1>
+        <p class="ig-auth-tagline">Sign in to see photos and videos from your friends.</p>
+
+        <div class="auth-tabs">
+          <button type="button" class="auth-tab-btn active" id="tab-login-btn">Log In</button>
+          <button type="button" class="auth-tab-btn" id="tab-signup-btn">Sign Up</button>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <form id="login-form" class="auth-form active">
+          <div class="ig-input-group">
+            <input type="text" id="login-username" required placeholder="Username or User ID">
+          </div>
+          <div class="ig-input-group">
+            <input type="password" id="login-password" required placeholder="Password">
+          </div>
+          <div id="login-error" class="auth-error" style="display:none;"></div>
+          <button type="submit" class="uiverse-btn btn-block">Log In to New Day</button>
+
+          <div class="ig-divider">
+            <div class="line"></div>
+            <div class="or">OR</div>
+            <div class="line"></div>
+          </div>
+
+          <div class="demo-login-box">
+            <span>Demo User: <strong>alex_cyber</strong></span>
+            <span>Password: <strong>password123</strong></span>
+          </div>
+        </form>
+
+        <!-- SIGNUP FORM -->
+        <form id="signup-form" class="auth-form">
+          <div class="ig-input-group">
+            <input type="text" id="signup-username" required placeholder="Create Username">
+          </div>
+          <div class="ig-input-group">
+            <input type="text" id="signup-name" required placeholder="Full Name">
+          </div>
+          <div class="ig-input-group">
+            <input type="password" id="signup-password" required placeholder="Create Password">
+          </div>
+          <div class="ig-input-group">
+            <input type="url" id="signup-avatar" placeholder="Profile Picture URL (Optional)">
+          </div>
+          <div id="signup-error" class="auth-error" style="display:none;"></div>
+          <button type="submit" class="uiverse-btn btn-block">Sign Up</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN NEW DAY APPLICATION LAYOUT -->
+  <div class="app-layout">
+
+    <!-- LEFT SIDEBAR NAVIGATION COMPONENT -->
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <a href="/" class="brand-link" id="brand-home-link" onclick="window.switchTab('feed'); return false;">
+          <h1 class="ig-logo-text">New Day</h1>
+          <div class="ig-logo-icon" style="display:none;"><i class="fa-solid fa-sun"></i></div>
+        </a>
+
+        <nav class="nav-menu">
+          <button type="button" class="nav-item active" data-tab="feed" id="nav-btn-home" onclick="window.switchTab('feed');">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+          </button>
+
+          <button type="button" class="nav-item" data-tab="explore" id="nav-btn-search" onclick="window.openSearchOverlay();">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <span>Search</span>
+          </button>
+
+          <button type="button" class="nav-item" data-tab="explore" id="nav-btn-explore" onclick="window.switchTab('explore');">
+            <i class="fa-regular fa-compass"></i>
+            <span>Explore</span>
+          </button>
+
+          <button type="button" class="nav-item" data-tab="reels" id="nav-btn-reels" onclick="window.switchTab('reels');">
+            <i class="fa-solid fa-clapperboard"></i>
+            <span>Reels</span>
+          </button>
+
+          <button type="button" class="nav-item" id="nav-btn-messages" onclick="window.openMessagesDrawer();">
+            <i class="fa-regular fa-paper-plane"></i>
+            <span>Messages</span>
+          </button>
+
+          <button type="button" class="nav-item" id="nav-btn-notifications" onclick="window.openNotificationsDrawer();">
+            <i class="fa-regular fa-heart"></i>
+            <span>Notifications</span>
+          </button>
+
+          <button type="button" class="nav-item" id="nav-btn-create" onclick="window.openCreateModal();">
+            <i class="fa-regular fa-square-plus"></i>
+            <span>Create</span>
+          </button>
+
+          <button type="button" class="nav-item" data-tab="profile" id="nav-btn-profile" onclick="window.switchTab('profile');">
+            <img id="nav-user-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80" alt="Profile" class="nav-avatar-img">
+            <span>Profile</span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="sidebar-bottom">
+        <button type="button" class="nav-item" id="logout-btn" style="color: #ff4d6d;" onclick="window.logoutUser();">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Log Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT VIEW ROUTER -->
+    <main class="main-content">
+
+      <!-- TAB 1: MAIN HOME FEED -->
+      <section id="tab-feed" class="tab-page active">
+        <div class="feed-layout-wrapper">
+          <div class="feed-left-col">
+            <div class="stories-container" id="stories-container"></div>
+            <div class="posts-feed" id="feed-container">
+              <div class="loading-spinner">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <p>Loading New Day feed...</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="feed-right-col">
+            <div class="right-user-row">
+              <div class="right-user-info" id="right-user-click-box" onclick="window.switchTab('profile');">
+                <img id="right-user-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=300&q=80" alt="Avatar">
+                <div class="right-user-text">
+                  <span id="right-user-handle" class="right-username">@guest</span>
+                  <span id="right-user-fullname" class="right-fullname">Guest User</span>
+                </div>
+              </div>
+              <button type="button" class="btn-text-blue" id="switch-account-btn" onclick="window.showAuthModal();">Switch</button>
+            </div>
+
+            <div class="suggestions-header">
+              <span class="sugg-title">Suggested for you</span>
+              <button type="button" class="sugg-see-all">See All</button>
+            </div>
+
+            <div class="suggestions-list" id="suggestions-list"></div>
+
+            <footer class="ig-footer">
+              <p>About • Help • Press • API • Jobs • Privacy • Terms • Locations • Language</p>
+              <p class="copyright">© 2026 NEW DAY</p>
+            </footer>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: REELS SNAP SCROLL -->
+      <section id="tab-reels" class="tab-page">
+        <div id="audio-enable-banner" class="audio-enable-banner">
+          <i class="fa-solid fa-volume-high"></i>
+          <span>Tap to unmute Reel Audio Sound 🎵</span>
+        </div>
+        <div class="reels-feed-container" id="reels-container"></div>
+      </section>
+
+      <!-- TAB 3: EXPLORE & SEARCH GRID -->
+      <section id="tab-explore" class="tab-page">
+        <div class="explore-header-box">
+          <div class="search-input-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="explore-search" placeholder="Search captions, tags, creators...">
+          </div>
+        </div>
+        <div class="ig-grid-3col" id="explore-grid"></div>
+      </section>
+
+      <!-- TAB 4: PROFILE PAGE -->
+      <section id="tab-profile" class="tab-page">
+        <div class="ig-profile-header">
+          <div class="profile-avatar-col">
+            <img id="prof-avatar" src="" alt="Profile Avatar">
+          </div>
+          <div class="profile-meta-col">
+            <div class="profile-row-1">
+              <h2 id="prof-username" class="profile-handle">username</h2>
+              <button type="button" class="uiverse-btn" id="edit-profile-btn">Edit profile</button>
+              <button type="button" class="uiverse-btn" id="prof-follow-btn" style="display:none;">Follow</button>
+            </div>
+
+            <div class="profile-row-2">
+              <span><strong id="prof-posts-count">0</strong> posts</span>
+              <span><strong id="prof-followers-count">0</strong> followers</span>
+              <span><strong id="prof-following-count">0</strong> following</span>
+            </div>
+
+            <div class="profile-row-3">
+              <span id="prof-full-name" class="prof-name">Full Name</span>
+              <p id="prof-bio-text" class="prof-bio">Bio text here...</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="ig-profile-tabs">
+          <button type="button" class="prof-tab-item active" id="prof-tab-posts-btn">
+            <i class="fa-solid fa-table-cells"></i> <span>POSTS</span>
+          </button>
+          <button type="button" class="prof-tab-item" id="prof-tab-reels-btn">
+            <i class="fa-solid fa-clapperboard"></i> <span>REELS</span>
+          </button>
+        </div>
+
+        <div class="ig-grid-3col" id="profile-grid"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- INSTAGRAM DIRECT MESSAGES INBOX MODAL -->
+  <div class="modal-overlay" id="messages-modal">
+    <div class="modal-card dm-modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-regular fa-paper-plane" style="color:#008cff;"></i> Direct Messages</h3>
+        <button type="button" class="close-btn" onclick="document.getElementById('messages-modal').classList.remove('active')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="dm-layout">
+        <div class="dm-contacts-list" id="dm-contacts-list"></div>
+
+        <div class="dm-chat-window">
+          <div class="dm-chat-header" id="dm-chat-header">
+            <img id="dm-target-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" alt="Avatar">
+            <div>
+              <div id="dm-target-username" class="dm-header-title">@sarah_art</div>
+              <div class="dm-header-status"><span class="online-dot"></span> Active now</div>
+            </div>
+          </div>
+
+          <div class="dm-messages-body" id="dm-messages-body"></div>
+
+          <div class="dm-input-bar">
+            <input type="text" id="dm-text-input" placeholder="Message...">
+            <button type="button" id="dm-send-btn" class="uiverse-btn" onclick="window.sendDirectMessage();">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHARE REEL / POST TO FAKE USERS MODAL -->
+  <div class="modal-overlay" id="share-modal">
+    <div class="modal-card share-modal-card">
+      <div class="modal-header">
+        <h3>Share Reel / Post</h3>
+        <button type="button" class="close-btn" onclick="document.getElementById('share-modal').classList.remove('active')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" style="padding: 16px;">
+        <div class="search-input-box" style="width: 100%; margin-bottom: 16px;">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="share-search-input" placeholder="Search friends to send reel...">
+        </div>
+        <div class="share-users-list" id="share-users-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTIFICATIONS OVERLAY DRAWER -->
+  <div class="modal-overlay" id="notifications-modal">
+    <div class="modal-card" style="max-width: 450px;">
+      <div class="modal-header">
+        <h3><i class="fa-regular fa-heart" style="color:#ff4d6d;"></i> Notifications</h3>
+        <button type="button" class="close-btn" onclick="document.getElementById('notifications-modal').classList.remove('active')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" style="padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+        <div class="notification-item" style="display:flex; align-items:center; gap:12px; font-size:13px;">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" style="width:36px; height:36px; border-radius:50%; object-fit:cover;">
+          <span><strong>sarah_art</strong> liked your recent reel. <small style="color:#888;">2m ago</small></span>
+        </div>
+        <div class="notification-item" style="display:flex; align-items:center; gap:12px; font-size:13px;">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" style="width:36px; height:36px; border-radius:50%; object-fit:cover;">
+          <span><strong>dev_mike</strong> started following you. <small style="color:#888;">1h ago</small></span>
+        </div>
+        <div class="notification-item" style="display:flex; align-items:center; gap:12px; font-size:13px;">
+          <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100" style="width:36px; height:36px; border-radius:50%; object-fit:cover;">
+          <span><strong>elena_travels</strong> commented: "Amazing video! 🔥" <small style="color:#888;">3h ago</small></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREATE POST / REEL MODAL WITH FAILSAFE UPLOAD DROPZONE -->
+  <div class="modal-overlay" id="create-modal">
+    <div class="modal-card create-modal-card">
+      <div class="modal-header">
+        <h3>Create new post</h3>
+        <button type="button" class="close-btn" id="close-create-modal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="create-source-tabs">
+        <button type="button" class="create-source-btn active" id="src-tab-file">
+          <i class="fa-solid fa-folder-open"></i> From Storage
+        </button>
+        <button type="button" class="create-source-btn" id="src-tab-camera">
+          <i class="fa-solid fa-camera"></i> Camera Record
+        </button>
+        <button type="button" class="create-source-btn" id="src-tab-url">
+          <i class="fa-solid fa-link"></i> Web URL
+        </button>
+      </div>
+
+      <form id="create-post-form" class="modal-body">
+        <!-- SOURCE 1: DEVICE STORAGE FILE PICKER -->
+        <div id="src-panel-file" class="source-panel active">
+          <label class="upload-dropzone" id="dropzone" for="device-file-input">
+            <i class="fa-regular fa-images upload-icon"></i>
+            <p><strong>Click to select photo or video from device</strong></p>
+            <span class="uiverse-btn btn-select-file">Select from storage</span>
+            <input type="file" id="device-file-input" accept="image/*,video/*" style="display:none;">
+          </label>
+          <div id="file-preview-box" class="media-preview-box" style="display:none;"></div>
+        </div>
+
+        <!-- SOURCE 2: CAMERA & MIC RECORDING -->
+        <div id="src-panel-camera" class="source-panel">
+          <div class="camera-container">
+            <video id="camera-stream" autoplay playsinline muted></video>
+            <div id="recording-badge" class="recording-badge" style="display:none;">
+              <span class="rec-dot"></span> REC <span id="rec-timer">00:00</span>
+            </div>
+          </div>
+          <div class="camera-controls">
+            <button type="button" class="uiverse-btn" id="start-cam-btn">Enable Camera</button>
+            <button type="button" class="uiverse-btn" id="snap-photo-btn" style="display:none;">Take Photo</button>
+            <button type="button" class="uiverse-btn" id="record-reel-btn" style="display:none;">Record Reel</button>
+            <button type="button" class="uiverse-btn" id="stop-rec-btn" style="display:none; border-color:#ff4d6d; color:#ff4d6d;">Stop</button>
+          </div>
+          <div id="camera-preview-box" class="media-preview-box" style="display:none;"></div>
+        </div>
+
+        <!-- SOURCE 3: WEB URL -->
+        <div id="src-panel-url" class="source-panel">
+          <div class="ig-input-group">
+            <input type="url" id="post-media-url" placeholder="Paste image or direct video URL...">
+          </div>
+        </div>
+
+        <div class="ig-input-group">
+          <label class="input-label">Select Format</label>
+          <div class="type-selector">
+            <label class="type-option">
+              <input type="radio" name="post_type" value="post" checked>
+              <span>Photo Post</span>
+            </label>
+            <label class="type-option">
+              <input type="radio" name="post_type" value="reel">
+              <span>Video Reel</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="ig-input-group">
+          <textarea id="post-caption" rows="3" placeholder="Write a caption..."></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="ig-input-group">
+            <input type="text" id="post-location" placeholder="Add location">
+          </div>
+          <div class="ig-input-group">
+            <input type="text" id="post-audio" placeholder="Audio name">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="uiverse-btn" id="cancel-create-btn">Cancel</button>
+          <button type="submit" class="uiverse-btn" id="submit-post-btn">Share Post</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- EDIT PROFILE MODAL -->
+  <div class="modal-overlay" id="edit-profile-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Edit profile</h3>
+        <button type="button" class="close-btn" id="close-edit-modal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="edit-profile-form" class="modal-body">
+        <div class="ig-input-group">
+          <label class="input-label">Name</label>
+          <input type="text" id="edit-name" required>
+        </div>
+        <div class="ig-input-group">
+          <label class="input-label">Avatar Image URL</label>
+          <input type="url" id="edit-avatar" required>
+        </div>
+        <div class="ig-input-group">
+          <label class="input-label">Bio</label>
+          <textarea id="edit-bio" rows="3"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="uiverse-btn" id="cancel-edit-btn">Cancel</button>
+          <button type="submit" class="uiverse-btn">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- COMMENTS DRAWER MODAL -->
+  <div class="modal-overlay" id="comments-modal">
+    <div class="modal-card comments-drawer">
+      <div class="modal-header">
+        <h3>Comments</h3>
+        <button type="button" class="close-btn" id="close-comments-modal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="comments-body" id="comments-list"></div>
+      <div class="comments-input-bar">
+        <input type="text" id="new-comment-input" placeholder="Add a comment...">
+        <button type="button" id="submit-comment-btn" class="uiverse-btn">Post</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS ENGINE -->
+  <script src="app.js"></script>
+</body>
+</html>
